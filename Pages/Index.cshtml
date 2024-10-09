@@ -1,0 +1,48 @@
+﻿@page
+@model ObserveAssign.Areas.Identity.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Home page";
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Administrator"))
+        {
+            Response.Redirect("/User/Index");
+        }
+        Response.Redirect("/Home");
+    }
+}
+
+<div class="text-center">
+    <img class="bannerImage" alt="Header Image - ObserveAssign" src="~/BANNER_IMAGE.jpg" />
+</div>
+<h1 class="align-content-start">Welcome to ObserveAssign</h1>
+<p>Observation through Video Assignment</p>
+<div>
+    <div class="login-box">
+        <h2 class="text-center">Log In</h2>
+        <div>
+            <form id="account" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group row">
+                    <label asp-for="Input.Email" class="form-label col-2"></label>
+                    <input asp-for="Input.Email" class="form-control col" autocomplete="username" aria-required="true" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <label asp-for="Input.Password" class="form-label col-2"></label>
+                    <input asp-for="Input.Password" class="form-control col" autocomplete="current-password" aria-required="true" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col">
+                        <p>
+                        <a id="forgot-password" href="./Identity/Account/ForgotPassword">Forgot your password?</a>
+                        </p>
+                        <button id="login-submit" type="submit" class="btn btn-lg btn-primary">Log in</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

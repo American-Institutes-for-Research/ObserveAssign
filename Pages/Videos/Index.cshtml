@@ -1,0 +1,92 @@
+﻿@page
+@model ObserveAssign.Pages.Videos.IndexModel
+
+@{
+    ViewData["Title"] = "Videos";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Administration</h1>
+
+<h2>Select Project</h2>
+
+<div class="form-group row w-50 pb-3 project-filter">
+    <label class="control-label col-2">Project</label>
+    <select asp-for="SelectedProjectID" class="form-control col" asp-items="@Model.Projects">
+        <option value="-1">-- Please Select --</option>
+    </select>
+</div>
+
+<ul class="nav nav-tabs admin-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="/User/Index">Users</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Videos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/UserVideo/Index">User Videos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Administration/Actions">Actions</a>
+    </li>
+</ul>
+
+<div class="blue-border">
+    <h2>Videos</h2>
+
+    <div class="float-end">
+        <a asp-page="Create" class="btn btn-green">Create New Video</a>
+    </div>
+    @(
+        Html.Kendo().Grid(Model.VideoModel)
+        .Name("videoGrid")
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ProjectId).Hidden().HtmlAttributes(new { @class = "pids", pids = "#: ProjectId #_" }); //for Project filters
+            columns.Bound(p => p.Name);
+            columns.Bound(p => p.NumberViewsAllowed);
+            columns.Bound(p => p.URL);
+            columns.Bound(p => p.CanRewatch).Width(100).ClientTemplate("<input # if(data.CanRewatch){ # checked='checked' #}# class='check-box' disabled='disabled' type='checkbox'>");
+            columns.Bound(p => p.CanPause).Width(100).ClientTemplate("<input # if(data.CanPause){ # checked='checked' #}# class='check-box' disabled='disabled' type='checkbox'>");
+            columns.Bound(p => p.CanRewind).Width(100).ClientTemplate("<input # if(data.CanRewind){ # checked='checked' #}# class='check-box' disabled='disabled' type='checkbox'>");
+            columns.Bound(p => p.IsArchived).Width(100).ClientTemplate("<input # if(data.IsArchived){ # checked='checked' #}# class='check-box' disabled='disabled' type='checkbox'>");
+            columns.Bound(p => p.ID).Width(270).ClientTemplate("<a href='/Videos/Edit?id=#: ID #' class='btn btn-lightgreen'>Edit</a> <a href='/Videos/Details?id=#: ID #' class='btn btn-lightblue'>Details</a> <a href='/Videos/Delete?id=#: ID #' class='btn btn-lightgrey'>Delete</a>").Title("Options");
+        })
+        .Pageable()
+        .Sortable()
+            .HtmlAttributes(new { @class = "gridBelowCreateBtn" })
+        .Scrollable()
+        //.Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+        )
+    )
+    
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#SelectedProjectID").change(function () {
+                var selectedItem = $("select option:selected").val();
+
+                var grid = $("#videoGrid").data('kendoGrid');
+
+                if (selectedItem == "-1") {
+                    //show all
+                    grid.dataSource.filter({});
+                } else {
+                    //filter based on selection
+                    grid.dataSource.filter({
+                        field: 'ProjectId',
+                        operator: 'eq',
+                        value: selectedItem
+                    });
+                }
+            });
+        });
+    </script>
+}

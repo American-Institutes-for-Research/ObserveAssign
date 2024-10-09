@@ -1,0 +1,130 @@
+﻿@page
+@model ObserveAssign.Pages.User.IndexModel
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Administration</h1>
+
+<h2>Select Project</h2>
+
+<div class="form-group row w-50 pb-3 project-filter">
+    <label class="control-label col-2">Project</label>
+    <select asp-for="SelectedProjectID" class="form-control col" asp-items="@Model.Projects">
+        <option value="-1">-- Please Select --</option>
+    </select>
+</div>
+
+<ul class="nav nav-tabs admin-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Users</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Videos/Index">Videos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/UserVideo/Index">User Videos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Administration/Actions">Actions</a>
+    </li>
+</ul>
+
+<div class="blue-border">
+    <h2>Users</h2>
+
+    <div class="float-end">
+        <a asp-page="Create" class="btn btn-green">Create New User</a>
+    </div>
+
+    <h3><img src="/img/active-user.png" alt="Active User" />Active Users</h3>
+    @(
+        Html.Kendo().Grid<Models.AspNetUserViewModel>(Model.UserModel.Where(u => !u.LockoutEnabled))
+        .Name("activeUserGrid")
+        .ToolBar(t => t.Search().Text("Search by Last Name"))
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ProjectIds).Hidden().HtmlAttributes(new { @class = "pids", pids="#: ProjectIds #" }); //for Project filters
+            columns.Bound(p => p.LockoutEnabled).ClientTemplate("# if(data.LockoutEnabled){# Inactive #}else{# Active # } #").Title("Status").Width(80);
+            columns.Bound(p => p.FirstName);
+            columns.Bound(p => p.LastName).ClientTemplate("<a href='/User/Details?id=#: ID #'>#: LastName #</a>");
+            columns.Bound(p => p.Email).ClientTemplate("<a href='mailto:#: Email #'>#: Email #</a>");
+            columns.Bound(p => p.UserRoleList).Title("Role");
+            columns.Bound(p => p.NumberAssigned).Title("# Assigned").Width(100);
+            //columns.Bound(p => p.AssignedSchoolIDs).Title("School ID");
+            columns.Bound(p => p.ID).Width(270).ClientTemplate("<a href='/User/Edit?id=#: ID #' class='btn btn-lightgreen'>Edit</a> <a href='/UserVideo/Create?id=#: ID #' class='btn btn-lightblue'>Assign Video</a> <a href='/User/Delete?id=#: ID #' class='btn btn-lightgrey'>Delete</a>").Title("Options");
+        })
+        .Pageable()
+        .Sortable()
+        .Scrollable()
+        //.Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+        .Search(s => { s.Field(p => p.LastName, "contains"); })
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .ServerOperation(false)
+            )
+        )    
+
+    <h3><img src="/img/inactive-user.png" alt="Active User" class="pr-2" />Inactive Users</h3>
+    @(
+        Html.Kendo().Grid<Models.AspNetUserViewModel>(Model.UserModel.Where(u => u.LockoutEnabled))
+        .Name("inactiveUserGrid")
+        .ToolBar(t => t.Search().Text("Search by Last Name"))
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ProjectIds).Hidden().HtmlAttributes(new { @class = "pids", pids = "#: ProjectIds #" }); //for Project filters
+            columns.Bound(p => p.LockoutEnabled).ClientTemplate("# if(data.LockoutEnabled){# Inactive #}else{# Active # } #").Title("Status").Width(80);
+            columns.Bound(p => p.FirstName);
+            columns.Bound(p => p.LastName).ClientTemplate("<a href='/User/Details?id=#: ID #'>#: LastName #</a>");
+            columns.Bound(p => p.Email).ClientTemplate("<a href='mailto:#: Email #'>#: Email #</a>");
+            columns.Bound(p => p.UserRoleList).Title("Role");
+            columns.Bound(p => p.NumberAssigned).Title("# Assigned").Width(100);
+            //columns.Bound(p => p.AssignedSchoolIDs).Title("School ID");
+            columns.Bound(p => p.ID).ClientTemplate("<a href='/User/Edit?id=#: ID #' class='btn btn-lightgreen'>Edit</a>").Title("Options");
+        })
+        .Pageable()
+        .Sortable()
+        .Scrollable()
+        //.Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+        .Search(s => { s.Field(p => p.LastName, "contains"); })
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+        )
+        )
+    
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#SelectedProjectID").change(function () {
+                var selectedItem = $("select option:selected").val() + "_";
+
+                var activeGrid = $("#activeUserGrid").data('kendoGrid');
+                var inActiveGrid = $("#inactiveUserGrid").data('kendoGrid');
+
+                if (selectedItem == "-1_") {
+                    //show all
+                    activeGrid.dataSource.filter({});
+                    inActiveGrid.dataSource.filter({});
+                } else {
+                    //filter based on selection
+                    activeGrid.dataSource.filter({
+                        field: 'ProjectIds',
+                        operator: 'contains',
+                        value: selectedItem
+                    });
+                    inActiveGrid.dataSource.filter({
+                        field: 'ProjectIds',
+                        operator: 'contains',
+                        value: selectedItem
+                    });
+                }
+            });
+        });
+    </script>
+}

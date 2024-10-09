@@ -1,0 +1,77 @@
+﻿@page
+@model ObserveAssign.Pages.Videos.DetailsModel
+
+@{
+    ViewData["Title"] = "Video Details";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Video Information</h1>
+
+
+<div class="row">
+    <div class="col">
+        <div>@Html.DisplayFor(model => model.VideoModel.Name)</div>
+        <div>@Html.DisplayFor(model => model.VideoModel.Project.Name)</div>
+        <div>@Html.DisplayFor(model => model.VideoModel.School.Name)</div>
+    </div>
+    <div class="col">
+        @if (Model.VideoModel.IsArchived)
+        {
+            <p>Active</p>
+        }
+        else
+        {
+            <p>Inactive</p>
+        }
+    </div>
+    <div class="col">
+        <a asp-page="./Edit" asp-route-id="@Model.VideoModel.ID" class="btn btn-green">Edit Video</a>
+    </div>
+</div>
+
+<h2>Assigned User</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Assigned Date</th>
+            <th>Notes</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UserVideoModel)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AspNetUser.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    @(Html.Kendo().EditorFor(m => item.Notes).Tag("div")
+                        .Tools(tools => tools
+                            .Clear()
+                            .Pdf()
+                        )
+                        .Serialization(s => s
+                            .Entities(true)
+                            .Scripts(false)
+                            .Semantic(false)
+                        ).Encoded(false)
+                    )
+                </td>
+                <td>
+                    <a asp-page="/UserVideo/Edit" asp-route-id="@item.Id" class="btn btn-lightblue">Unassign Video</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-page="./Index" class="btn btn-outline-dark">Back to List</a>
+</div>

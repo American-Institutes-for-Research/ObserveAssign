@@ -1,0 +1,67 @@
+﻿@page
+@model ObserveAssign.Pages.UserVideo.DetailsModel
+@{
+    ViewData["Title"] = "User Video Assignment";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>User Video Assignment</h1>
+
+<h4>Video Assignment</h4>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.UserVideoModel.AspNetUser.FirstName)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.UserVideoModel.AspNetUser.FirstName)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.UserVideoModel.Video.Name)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.UserVideoModel.Video.Name)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.UserVideoModel.Tool.Name)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.UserVideoModel.Tool.Name)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.UserVideoModel.Notes)
+    </dt>
+    <dd class="col-sm-10">
+        @(Html.Kendo().EditorFor(m => Model.UserVideoModel.Notes).Tag("div")
+            .Tools(tools => tools
+            .Clear()
+            .Pdf()
+            )
+            .Serialization(s => s
+            .Entities(true)
+            .Scripts(false)
+            .Semantic(false)
+            ).Encoded(false)
+        )
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.UserVideoModel.IsComplete)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.UserVideoModel.IsComplete)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.UserVideoModel.IsArchived)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.UserVideoModel.IsArchived)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.UserVideoModel.IsLocked)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.UserVideoModel.IsLocked)
+    </dd>
+</dl>
+<a asp-page="Index" class="btn btn-outline-dark">Back to List</a>

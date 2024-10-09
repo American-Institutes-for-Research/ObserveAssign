@@ -1,0 +1,81 @@
+﻿@page
+@model ObserveAssign.Pages.Administration.ActionsModel
+@{
+    ViewData["Title"] = "Administration";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+<h1>Administration</h1>
+
+<h2>Select Project</h2>
+
+<div class="form-group row w-50 pb-3 project-filter">
+    <label class="control-label col-2">Project</label>
+    <select asp-for="SelectedProjectID" class="form-control col" asp-items="@Model.Projects">
+        <option value="-1">-- Please Select --</option>
+    </select>
+</div>
+
+<ul class="nav nav-tabs admin-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="/User/Index">Users</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Videos/Index">Videos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/UserVideo/Index">User Videos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Actions</a>
+    </li>
+</ul>
+
+<div class="blue-border">
+    <h2>Actions</h2>
+    <h3><img src="/img/watchagain.png" alt="Watch Again"/>Watch Again Requests</h3>
+    @(
+        Html.Kendo().Grid(Model.UserVideoModel)
+        .Name("actionGrid")
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.Video.ProjectId).Hidden().HtmlAttributes(new { @class = "pids", pids = "#: Video.ProjectId #_" }); //for Project filters
+            columns.Bound(p => p.Video.Name).ClientTemplate("<a href='/Videos/Edit?id=#: data.Video.ID #' >#: Video.Name #</a>");
+            columns.Bound(p => p.AspNetUser.FullName).Title("Assigned To");
+            columns.Bound(p => p.Tool.Name).Title("Tool Used");
+            columns.Bound(p => p.Id).ClientTemplate("<a href='/UserVideo/Edit?id=#: Id #' class='btn btn-lightgreen'>Unlock</a>").Title("Options");
+        })
+        .Pageable()
+        .Sortable()
+        .Scrollable()
+        //.Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+        )
+        )
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#SelectedProjectID").change(function () {
+                var selectedItem = $("select option:selected").val();
+
+                var grid = $("#actionGrid").data('kendoGrid');
+
+                if (selectedItem == "-1") {
+                    //show all
+                    grid.dataSource.filter({});
+                } else {
+                    //filter based on selection
+                    grid.dataSource.filter({
+                        field: 'Video.ProjectId',
+                        operator: 'eq',
+                        value: selectedItem
+                    });
+                }
+            });
+        });
+    </script>
+}

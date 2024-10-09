@@ -1,0 +1,64 @@
+﻿@page
+@model ObserveAssign.Pages.UserVideo.CreateModel
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+@{
+    ViewData["Title"] = "Create User Video Assignment";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Create User Video Assignment</h1>
+
+<h4>Video Assignment</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.errorMessages != null && Model.errorMessages.Count > 0)
+            {
+                foreach (string error in Model.errorMessages)
+                {
+                    <div class="alert alert-danger">@error</div>
+                }
+            }
+            <div class="form-group row">
+                @*<label asp-for="UserVideoModel.VideoId" class="control-label col"></label>
+                <select asp-for="UserVideoModel.VideoId" class="form-control col" asp-items="@Model.Videos">
+                <option value="-1">-- Please Select --</option>
+                </select>*@
+
+                <label asp-for="@Model.SelectedVideos" class="control-label col"></label>
+                <select asp-for="@Model.SelectedVideos" class="form-control col" asp-items="@Model.Videos" multiple="multiple">
+                </select>
+                <span asp-validation-for="@Model.SelectedVideos" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col">Viewer</label>
+                <select asp-for="UserVideoModel.AspNetUserID" class="form-control col" asp-items="@Model.Users">
+                    <option value="-1">-- Please Select --</option>
+                </select>
+            </div>
+            
+            <div class="form-group row">
+                <label asp-for="UserVideoModel.ToolID" class="control-label col"></label>
+                <select asp-for="UserVideoModel.ToolID" class="form-control col" asp-items="@Model.Tools">
+                    <option value="-1">-- Please Select --</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-outline-dark">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

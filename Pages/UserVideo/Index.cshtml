@@ -1,0 +1,122 @@
+﻿@page
+@model ObserveAssign.Pages.UserVideo.IndexModel
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+@{
+    ViewData["Title"] = "User Video Assignments";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Administration</h1>
+
+<h2>Select Project</h2>
+
+<div class="form-group row w-50 pb-3 project-filter">
+    <label class="control-label col-2">Project</label>
+    <select asp-for="SelectedProjectID" class="form-control col" asp-items="@Model.Projects">
+        <option value="-1">-- Please Select --</option>
+    </select>
+</div>
+
+<ul class="nav nav-tabs admin-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="/User/Index">Users</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Videos/Index">Videos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">User Videos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Administration/Actions">Actions</a>
+    </li>
+</ul>
+
+<div class="blue-border">
+    <h2>User Video Assignments</h2>
+
+    <div class="float-end">
+        <a asp-page="Create" class="btn btn-green">Assign User</a>
+    </div>
+
+    <h3><img src="/img/incomplete-video.png" alt="Incomplete Video"/>Incomplete Videos</h3>
+    @(
+        Html.Kendo().Grid(Model.UserVideoModel.Where(m => !m.IsComplete))
+        .Name("incompleteGrid")
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.Video.ProjectId).Hidden().HtmlAttributes(new { @class = "pids", pids = "#: Video.ProjectId #_" }); //for Project filters
+            columns.Bound(p => p.Video.Name);
+            columns.Bound(p => p.AspNetUser.FullName).Title("Assigned To");
+            columns.Bound(p => p.Tool.Name).Title("Tool Used");
+            columns.Bound(p => p.Id).Width(270).ClientTemplate("<a href='/UserVideo/Edit?id=#: Id #' class='btn btn-lightgreen'>Edit</a> <a href='/UserVideo/Details?id=#: Id #' class='btn btn-lightblue'>Details</a> <a href='/UserVideo/Delete?id=#: Id #' class='btn btn-lightgrey'>Delete</a>").Title("Options");
+        })
+        .Pageable()
+        .Sortable()
+        .Scrollable()
+        //.Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+        )
+        )
+
+    <h3><img src="/img/complete-video.png" alt="Incomplete Video" />Complete Videos</h3>
+    @(
+        Html.Kendo().Grid(Model.UserVideoModel.Where(m => m.IsComplete))
+        .Name("completeGrid")
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.Video.ProjectId).Hidden().HtmlAttributes(new { @class = "pids", pids = "#: Video.ProjectId #_" }); //for Project filters
+            columns.Bound(p => p.Video.Name);
+            columns.Bound(p => p.AspNetUser.FullName).Title("Assigned To");
+            columns.Bound(p => p.Tool.Name).Title("Tool Used");
+            columns.Bound(p => p.Id).Width(270).ClientTemplate("<a href='/UserVideo/Edit?id=#: Id #' class='btn btn-lightgreen'>Edit</a> <a href='/UserVideo/Details?id=#: Id #' class='btn btn-lightblue'>Details</a> <a href='/UserVideo/Delete?id=#: Id #' class='btn btn-lightgrey'>Delete</a>").Title("Options");
+        })
+        .Pageable()
+        .Sortable()
+        .Scrollable()
+        //.Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+        )
+        )
+
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#SelectedProjectID").change(function () {
+                var selectedItem = $("select option:selected").val();
+
+                var incompleteGrid = $("#incompleteGrid").data('kendoGrid');
+                var grid = $("#completeGrid").data('kendoGrid');
+
+                if (selectedItem == "-1") {
+                    //show all
+                    incompleteGrid.dataSource.filter({});
+                    grid.dataSource.filter({});
+                } else {
+                    //filter based on selection
+                    grid.dataSource.filter({
+                        field: 'Video.ProjectId',
+                        operator: 'eq',
+                        value: selectedItem
+                    });
+                    incompleteGrid.dataSource.filter({
+                        field: 'Video.ProjectId',
+                        operator: 'eq',
+                        value: selectedItem
+                    });
+                }
+            });
+        });
+    </script>
+}

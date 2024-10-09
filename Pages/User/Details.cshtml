@@ -1,0 +1,107 @@
+﻿@page
+@model ObserveAssign.Pages.User.DetailsModel
+
+@{
+    ViewData["Title"] = "User Information";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>User Information</h1>
+
+<div class="row">
+    <div class="col">
+        <div>@Html.DisplayFor(model => model.UserModel.FullName)</div>
+        <div>@Html.DisplayFor(model => model.UserModel.Email)</div>
+        <div>@Html.DisplayFor(model => model.UserModel.UserRoles.FirstOrDefault().Role.Name)</div>
+        <div>@foreach(var proj in Model.UserModel.UserProjects)
+            {
+                @Html.DisplayFor(model => Model.Projects.Where(p => p.ID == proj.ProjectId).First().Name)<br />
+            }
+        </div>
+    </div>
+    <div class="col">
+        @if (!Model.UserModel.LockoutEnabled)
+        {
+            <p>Active</p>
+        }
+        else
+        {
+            <p>Inactive</p>
+        }
+    </div>
+    <div class="col">
+        <a asp-page="./Edit" asp-route-id="@Model.UserModel?.ID" class="btn btn-green">Edit User</a>
+    </div>
+</div>
+
+<h2>Assigned Videos</h2>
+
+<h3><img src="~/img/incomplete-video.png" />Incomplete Videos</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Assigned Date</th>
+            <th>Project</th>
+            <th>School</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UserVideoModel.Where(m => !m.IsComplete))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Video.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Video.Project.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Video.School.Name)
+                </td>
+                <td>
+                    <a asp-page="/UserVideo/Delete" asp-route-id="@item.Id" class="btn btn-lightblue">Unassign Video</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3><img src="~/img/complete-video.png" />Complete Videos</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Assigned Date</th>
+            <th>Project</th>
+            <th>School</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UserVideoModel.Where(m => m.IsComplete))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Video.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Video.Project.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Video.School.Name)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-page="./Index" class="btn btn-outline-dark">Back to User Table</a>
+</div>

@@ -1,0 +1,190 @@
+html {
+  font-size: 14px;
+  font-family: 'Proxima Nova Regular', Arial, Helvetica, sans-serif
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+.logoIcon{
+    height:100px;
+}
+.bannerImage {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    margin-top: -15px;
+}
+.navy-white-footer{
+    background-color: rgb(0,80,127);
+    color:white;
+    bottom: unset !important;
+}
+.bluetext{
+    color: rgb(0,110,159);
+}
+.orangetext{
+    color: rgb(188,75,39);
+}
+.greentext{
+    color:rgb(2,131,66);
+}
+.footer-logo{
+    max-height: 100px;
+    margin: 45px;
+}
+.login-box {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border: solid 1px rgb(0,80,127);
+    border-radius: 1rem;
+    padding: 20px 30px;
+}
+/* Headers */
+h1 {
+    color: rgb(0,110,159);
+    font-weight: bold;
+    font-size: 24pt;
+}
+h2 {
+    color: rgb(0,110,159);
+    font-weight: bold;
+    font-size: 18pt;
+}
+h3 {
+    color: rgb(0,110,159);
+    font-weight:normal;
+}
+h3 > img{
+    padding-right: 10px;
+}
+header {
+    border-bottom: rgb(0,80,127) 8px solid;
+    margin-bottom: 15px;
+}
+.navbar-brand {
+    color: rgb(0,80,127) !important;
+    font-size: 32px;
+    font-weight: bold;
+}
+.subbrand {
+    color: rgb(0,110,159);
+}
+/* Form Elements */
+input.btn, .btn-blue {
+    background-color: rgb(0,110,159);
+    color: white;
+}
+.btn-green {
+    background-color: rgb(2,131,66);
+    color: white;
+}
+.btn-lightgreen {
+    background-color: rgb(174,219,192); /* sage */
+    color: rgb(28,37,45); /* charcoal */
+}
+.btn-lightblue {
+    background-color: rgb(209,238,252); /* ice */
+    color: rgb(28,37,45); /* charcoal */
+}
+.btn-charcoal {
+    background-color: rgb(28,37,45);
+    color: white;
+}
+.btn-lightgrey {
+    background-color: rgb(226, 230, 232);
+    color: rgb(28,37,45);
+}
+a{
+    text-decoration:underline;
+}
+.verticalLine {
+    border-left: 3px solid grey;
+    height: 100%;
+    width: 3px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.right-align {
+    text-align: right;
+}
+.form-group.row{
+    padding-top:10px;
+}
+/* Navigation tabs */
+.project-filter {
+    margin-left: 20px;
+}
+.admin-tabs {
+    margin-left: 30px;
+}
+.admin-tabs a.nav-link {
+    background-color: rgb(114,128,138); /* stone grey */
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-right: 10px;
+}
+    .admin-tabs a.nav-link.active {
+        background-color: rgb(0,110,159); /* ocean blue */
+        color: white;
+    }
+.blue-border {
+    border: solid 1px rgb(0,110,159); /* ocean blue */
+    border-radius: 0.25rem;
+    padding: 30px;
+}
+/* Tables */
+.k-grid{
+    border:none !important;
+}
+    .k-grid a {
+        color: #0d6efd !important;
+        text-decoration: underline !important;
+    }
+        .k-grid a.btn-blue, .k-grid a.btn-green {
+            color: white !important;
+            text-decoration: none !important;
+        }
+        .k-grid a.btn-lightgreen, .k-grid a.btn-lightgrey, .k-grid a.btn-lightblue {
+            color: black !important;
+            text-decoration: none !important;
+        }
+.k-grid .k-header{
+    font-weight: bold;
+    border-bottom: solid black;
+}
+.k-grid tr, .kgrid td, .k-grid .k-alt, .k-grid-header{
+    border: none;
+    background-color: white !important;
+}
+.k-column-title{
+    text-overflow:unset !important;
+    white-space:break-spaces !important;
+}
+.k-grid-header {
+    width:100%;
+}
+div#activeUserGrid > .k-grid-toolbar > .k-spacer::before, div#inactiveUserGrid > .k-grid-toolbar > .k-spacer::before {
+    content: "Search by Last Name";
+}
+.k-toolbar {
+    width: 400px;
+    background-color: white !important;
+    border: none !important;
+}
+.gridBelowCreateBtn{
+    margin-top:50px;
+}

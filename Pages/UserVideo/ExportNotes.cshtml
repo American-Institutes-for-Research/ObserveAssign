@@ -1,0 +1,41 @@
+﻿@page
+@model ObserveAssign.Pages.UserVideo.ExportModel
+
+@{
+    ViewData["Title"] = "Export Notes";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>@Model.VideoModel.Name</h1>
+
+<div class="form-group">
+    <label asp-for="UserVideoModel.Notes" class="control-label col"></label>
+
+    @(Html.Kendo().EditorFor(m => m.UserVideoModel.Notes)
+        .Tools(tools => tools
+            .Clear()
+            .Bold()
+            .Italic()
+            .Underline()
+            .InsertOrderedList()
+            .InsertUnorderedList()
+            .Pdf()
+        )
+        .Serialization(s => s
+            .Entities(true)
+            .Scripts(false)
+            .Semantic(false)
+        ).Encoded(false)
+    )
+
+    <span asp-validation-for="UserVideoModel.Notes" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <a asp-page="/Home/Index" class="btn btn-outline-dark">Return Home</a>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

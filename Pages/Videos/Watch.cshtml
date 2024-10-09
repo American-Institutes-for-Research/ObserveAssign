@@ -1,0 +1,153 @@
+﻿@page
+@model ObserveAssign.Pages.Videos.WatchModel
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+@{
+    ViewData["Title"] = "Watch Video";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>@Model.VideoModel.Name</h1>
+
+<div class="alert alert-danger" id="errorMessages"></div>
+
+<form method="post">
+    
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="VideoModel.ID" />
+    <input type="hidden" asp-for="VideoModel.Name" />
+    <input type="hidden" asp-for="VideoModel.ProjectId" />
+    <input type="hidden" asp-for="VideoModel.SchoolId" />
+    <input type="hidden" asp-for="VideoModel.NumberViewsAllowed" />
+    <input type="hidden" asp-for="VideoModel.CanRewatch" />
+    <input type="hidden" asp-for="VideoModel.CanPause" />
+    <input type="hidden" asp-for="VideoModel.CanRewind" />
+    <input type="hidden" asp-for="VideoModel.IsArchived" />
+    <input type="hidden" asp-for="VideoModel.CreatedDate" />
+    <input type="hidden" asp-for="VideoModel.CreatedBy" />
+
+    <input type="hidden" asp-for="UserVideoModel.Id" />
+    <input type="hidden" asp-for="UserVideoModel.AspNetUserID" />
+    <input type="hidden" asp-for="UserVideoModel.VideoId" />
+    <input type="hidden" asp-for="UserVideoModel.NumberOfWatches" />
+    <input type="hidden" asp-for="UserVideoModel.IsLocked" />
+    <input type="hidden" asp-for="UserVideoModel.EmailNotificationDate" />
+    <input type="hidden" asp-for="UserVideoModel.ToolID" />
+    <input type="hidden" asp-for="UserVideoModel.CreatedDate" />
+    <input type="hidden" asp-for="UserVideoModel.CreatedBy" />
+    <input type="hidden" asp-for="UserVideoModel.IsArchived" />
+    <input type="hidden" asp-for="UserVideoModel.LastUpdatedBy" />
+    <input type="hidden" asp-for="UserVideoModel.LastUpdatedDate" />
+
+    <div class="form-group text-center">
+        @(
+            Html.Kendo().MediaPlayer()
+                    .AutoPlay(false) // Start playing the video as soon as it loads.
+                    .Navigatable(true) // Enable the keyboard navigation.
+                    .AutoRepeat(false) // Loop the video.
+                    .ForwardSeek(Model.VideoModel.CanRewind) // Disable forward seeking to ensure viewers will watch the entire video.
+                    .FullScreen(false) // Make sure the player won't automatically enter the full-screen mode.
+                .Mute(false) // Start with sound.
+                .Volume(10) // Preset the volume level (0 - 100).
+                .Media(m => m // Define the media file - a YouTube video in this case.
+                    .Title(Model.VideoModel.Name)
+                    .Source(Model.VideoModel.URL)
+                )
+                .Events(e =>
+                {
+                    e.Pause("playerPause"); //if User Can pause the video
+                    e.End("videoEnded");
+                    e.Play("incrementNumberOfViews");
+                })
+                .Name("mediaPlayer") // The name of the widget that is used for the ID and for referencing it at runtime.
+                .HtmlAttributes(new { style = "height:360px; width:640px; margin-left:auto; margin-right:auto;" })
+        )
+    </div>
+
+    <div class="form-group">
+        <label asp-for="UserVideoModel.Notes" class="control-label col"></label>
+
+        @(Html.Kendo().EditorFor(m => m.UserVideoModel.Notes)
+            .Tools(tools => tools
+                .Clear()
+                .Bold()
+                .Italic()
+                .Underline()
+                .InsertOrderedList()
+                .InsertUnorderedList()
+                .Pdf()
+            )
+            .Serialization(s => s
+                .Entities(true)
+                .Scripts(false)
+                .Semantic(false)
+            ).Encoded(false)
+        )
+
+        <span asp-validation-for="UserVideoModel.Notes" class="text-danger"></span>
+    </div>
+
+    <h2>Finished Coding and Watching Video?</h2>
+    <p>Check the box below to indicate the assignment is complete.</p>
+    <div class="form-group">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="UserVideoModel.IsComplete" /> @Html.DisplayNameFor(model => model.UserVideoModel.IsComplete)
+        </label>
+        <span asp-validation-for="UserVideoModel.IsComplete" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-page="/Home/Index" class="btn btn-outline-dark">Cancel</a>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function(){
+            //default - hide the errors
+            document.getElementById("errorMessages").style.display = "none";
+
+            //if can't rewind or fast forward, hide the seek bar:
+            if ("@Model.VideoModel.CanRewind.ToString()" == "False") {
+                $(".k-mediaplayer-seekbar").hide();
+            }
+        });
+        
+        function playerPause(e) {
+            // Handle the pause event.
+            if("@Model.VideoModel.CanPause.ToString()" == "False"){
+                e.preventDefault();
+                //keep playing
+                e.sender.play();
+                //show errors
+                document.getElementById("errorMessages").style.display = "block";
+                document.getElementById("errorMessages").innerText = "Pausing is not allowed";
+            }
+        }
+
+        function videoEnded(e){
+            //prevent replaying of the video after it's over
+            if ("@Model.VideoModel.CanRewatch.ToString()" == "False" || $("input#UserVideoModel_NumberOfWatches").attr("value") >= @Model.VideoModel.NumberViewsAllowed) {
+                //show errors
+                document.getElementById("errorMessages").style.display = "block";
+                document.getElementById("errorMessages").innerText = "Cannot rewatch the video";
+                //hide the media player and lock the video on save.
+                document.getElementById("mediaPlayer").style.display = "none";
+                
+                $("input#UserVideoModel_IsLocked").attr("value", "True");
+            }
+        }
+        function incrementNumberOfViews(e){
+            //Increment the NumberOfWatches
+            var currentVal = parseInt($("input#UserVideoModel_NumberOfWatches").attr("value"));
+            currentVal = currentVal + 1;
+
+            $("input#UserVideoModel_NumberOfWatches").attr("value",currentVal);
+        }
+    </script>
+}

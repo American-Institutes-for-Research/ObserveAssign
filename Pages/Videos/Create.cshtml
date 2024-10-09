@@ -1,0 +1,89 @@
+﻿@page
+@model ObserveAssign.Pages.Videos.CreateModel
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+@{
+    ViewData["Title"] = "Create Video";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Upload Video</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-5">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (!string.IsNullOrEmpty(Model.errorMessage))
+            {
+                <div class="alert alert-danger">@Model.errorMessage</div>
+            }
+            <div class="form-group row">
+                <label asp-for="VideoModel.Name" class="control-label col"></label>
+                <input asp-for="VideoModel.Name" class="form-control col" />
+                <span asp-validation-for="VideoModel.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="VideoModel.ProjectId" class="control-label col"></label>
+                <select asp-for="VideoModel.ProjectId" class ="form-control col" asp-items="@Model.Projects">
+                    <option value="-1">-- Please Select --</option>
+                </select>
+                <span asp-validation-for="VideoModel.ProjectId" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="VideoModel.SchoolId" class="control-label col"></label>
+                <select asp-for="VideoModel.SchoolId" class ="form-control col" asp-items="@Model.Schools">
+                    <option value="null">-- Please Select --</option>
+                </select>
+                <span asp-validation-for="VideoModel.SchoolId" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="VideoModel.NumberViewsAllowed" class="control-label col"></label>
+                <input asp-for="VideoModel.NumberViewsAllowed" class="form-control col" />
+                <span asp-validation-for="VideoModel.NumberViewsAllowed" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="VideoModel.VideoFile" class="control-label col"></label>
+                <input asp-for="VideoModel.VideoFile" class="form-control col" type="file" />
+                <span asp-validation-for="VideoModel.VideoFile" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-1">
+            <div class="verticalLine"></div>
+        </div>
+        <div class="col-5">
+            <h2>Viewer Permissions</h2>
+            <div class="form-group form-check form-check-inline">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="VideoModel.CanPause" /> @Html.DisplayNameFor(model => model.VideoModel.CanPause)
+                </label>
+            </div>
+            <div class="form-group form-check form-check-inline">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="VideoModel.CanRewind" /> @Html.DisplayNameFor(model => model.VideoModel.CanRewind)
+                </label>
+            </div>
+            <div class="form-group form-check form-check-inline">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="VideoModel.CanRewatch" /> @Html.DisplayNameFor(model => model.VideoModel.CanRewatch)
+                </label>
+            </div>
+            <div class="form-group form-check form-check-inline">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="VideoModel.IsArchived" /> @Html.DisplayNameFor(model => model.VideoModel.IsArchived)
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+            <a asp-page="Index" class="btn btn-outline-dark">Cancel</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

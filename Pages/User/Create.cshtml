@@ -1,0 +1,71 @@
+﻿@page
+@model ObserveAssign.Pages.User.CreateModel
+
+@{
+    ViewData["Title"] = "Create User";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Create User</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.errorMessages != null && Model.errorMessages.Count > 0)
+            {
+                foreach(string error in Model.errorMessages){
+            <div class="alert alert-danger">@error</div>
+                }
+            }
+            <div class="form-group row">
+                <label asp-for="UserModel.FirstName" class="control-label col-2 right-align"></label>
+                <input asp-for="UserModel.FirstName" class="form-control col" />
+                <span asp-validation-for="UserModel.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UserModel.LastName" class="control-label col-2 right-align"></label>
+                <input asp-for="UserModel.LastName" class="form-control col" />
+                <span asp-validation-for="UserModel.LastName" class="text-danger"></span>
+            </div>
+            @*<div class="form-group row">
+                <label asp-for="UserModel.UserName" class="control-label col-2 right-align"></label>
+                <input asp-for="UserModel.UserName" class="form-control col" />
+                <span asp-validation-for="UserModel.UserName" class="text-danger"></span>
+            </div>*@
+            <div class="form-group row">
+                <label asp-for="UserModel.Email" class="control-label col-2 right-align"></label>
+                <input asp-for="UserModel.Email" class="form-control col" type="email" />
+                <span asp-validation-for="UserModel.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UserModel.UserRoles" class="control-label col-2 right-align"></label>
+                <select asp-for="@Model.CurrentUserRole.RoleId" asp-items="@Model.UserRoles" class="form-control col">
+                    <option value="-1">-- Please Select --</option>
+                </select>
+                <span asp-validation-for="@Model.CurrentUserRole.RoleId" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UserModel.UserProjects" class="control-label col-2 right-align"></label>
+                <select asp-for="@Model.SelectedProjects" class="form-control col" asp-items="@Model.ProjectList" multiple="multiple">
+                </select>
+                <span asp-validation-for="@Model.SelectedProjects" class="text-danger"></span>
+            </div>
+            @*<div class="form-group row">
+                <label asp-for="UserModel.UserProjects" class="control-label col"></label>
+                @Html.ListBoxFor(model => model.UserModel.UserProjects, new MultiSelectList(Model.ProjectList, "ID", "Name", Model.UserModel.UserProjects), new {@class="form-control", multiple = "multiple"})
+            </div>*@
+            <div class="form-group row">
+                <div class="col-2"></div>
+                <div class="col p-0">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <a asp-page="Index" class="btn btn-outline-dark">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

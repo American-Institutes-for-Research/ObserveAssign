@@ -1,0 +1,40 @@
+﻿@page
+@model ObserveAssign.Pages.Project.IndexModel
+@{
+}
+
+@{
+    ViewData["Title"] = "Projects";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Projects</h1>
+
+<div class="float-end">
+    <a asp-page="Create" class="btn btn-green">Create New Project</a>
+</div>
+
+@(
+Html.Kendo().Grid(Model.ProjectModel)
+        .Name("projectGrid")
+        .Columns(columns =>
+        {
+            //columns.Bound(p => p.ID);
+            columns.Bound(p => p.Name);
+            columns.Bound(p => p.IsArchived).Width(100).ClientTemplate("# if(data.IsArchived){# Yes #}else{# No # } #");
+            columns.Bound(p => p.CreatedDate).Format("{0:MM/dd/yyyy}").Width(150);
+            columns.Bound(p => p.CreatedBy);
+            columns.Bound(p => p.LastUpdatedBy);
+            columns.Bound(p => p.LastUpdatedDate).Format("{0:MM/dd/yyyy}").Width(150);
+            columns.Bound(p => p.ID).Width(150).ClientTemplate("<a href='/Project/Edit?id=#: ID #' class='btn btn-lightgreen'>Edit</a> <a href='/Project/Delete?id=#: ID #' class='btn btn-lightgrey'>Delete</a>").Title("Options");
+        })
+        .Pageable()
+        .HtmlAttributes(new { @class="gridBelowCreateBtn" })
+        .Sortable(sort => sort.AllowUnsort(true).InitialDirection("desc"))
+        .Scrollable(scroll => scroll.Height("fit-content"))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .ServerOperation(false)
+            )
+        )

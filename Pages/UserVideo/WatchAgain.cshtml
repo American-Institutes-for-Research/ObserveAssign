@@ -1,0 +1,17 @@
+﻿@page
+@model ObserveAssign.Pages.UserVideo.WatchModel
+
+@{
+    ViewData["Title"] = "Watch Video Again";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>@Model.UserVideoModel.Video.Name</h1>
+
+<p>Your request has been submitted to watch the video again. </p>
+<a asp-page="/Home/Index" class="btn btn-blue">Return Home</a>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

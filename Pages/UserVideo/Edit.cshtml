@@ -1,0 +1,79 @@
+﻿@page
+@model ObserveAssign.Pages.UserVideo.EditModel
+
+@{
+    ViewData["Title"] = "Edit User Video Assignment";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Edit User Video Assignment</h1>
+
+<h4>Video Assignment</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.errorMessages != null && Model.errorMessages.Count > 0)
+            {
+                foreach (string error in Model.errorMessages)
+                {
+                    <div class="alert alert-danger">@error</div>
+                }
+            }
+            <input type="hidden" asp-for="UserVideoModel.Id" />
+            <input type="hidden" asp-for="UserVideoModel.CreatedDate" />
+            <input type="hidden" asp-for="UserVideoModel.CreatedBy" />
+            <div class="form-group row">
+                <label asp-for="UserVideoModel.AspNetUserID" class="control-label col"></label>
+                <select asp-for="UserVideoModel.AspNetUserID" class="form-control col" asp-items="@Model.Users">
+                    <option value="-1">-- Please Select --</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UserVideoModel.VideoId" class="control-label col"></label>
+                <select asp-for="UserVideoModel.VideoId" class="form-control col" asp-items="@Model.Videos">
+                    <option value="-1">-- Please Select --</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UserVideoModel.ToolID" class="control-label col"></label>
+                <select asp-for="UserVideoModel.ToolID" class="form-control col" asp-items="@Model.Tools">
+                    <option value="-1">-- Please Select --</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UserVideoModel.Notes" class="control-label col"></label>
+                <input asp-for="UserVideoModel.Notes" class="form-control col" />
+                <span asp-validation-for="UserVideoModel.Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="UserVideoModel.IsComplete" /> @Html.DisplayNameFor(model => model.UserVideoModel.IsComplete)
+                </label>
+                <span asp-validation-for="UserVideoModel.IsComplete" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group form-check row">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="UserVideoModel.IsArchived" /> @Html.DisplayNameFor(model => model.UserVideoModel.IsArchived)
+                </label>
+            </div>
+            <div class="form-group form-check row">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="UserVideoModel.IsLocked" /> @Html.DisplayNameFor(model => model.UserVideoModel.IsLocked)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Edit" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-outline-dark">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
